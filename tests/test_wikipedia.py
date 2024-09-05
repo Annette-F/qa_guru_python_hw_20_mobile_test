@@ -10,6 +10,8 @@ from selene import browser, have
 @allure.feature('Search article about "Appium"')
 @allure.story('Search article')
 def test_search():
+    with allure.step('Skip wellcome screen'):
+        browser.element((AppiumBy.ID, 'org.wikipedia.alpha:id/fragment_onboarding_skip_button')).click()
     with allure.step('Type search "Appium"'):
         browser.element((AppiumBy.ACCESSIBILITY_ID, 'Search Wikipedia')).click()
         browser.element((AppiumBy.ID, 'org.wikipedia.alpha:id/search_src_text')).type('Appium')
@@ -25,6 +27,8 @@ def test_search():
 @allure.feature('Search article about "Python"')
 @allure.story('Search article')
 def test_search_first_article():
+    with allure.step('Skip wellcome screen'):
+        browser.element((AppiumBy.ID, 'org.wikipedia.alpha:id/fragment_onboarding_skip_button')).click()
     with allure.step('Type search "Python"'):
         browser.element((AppiumBy.ACCESSIBILITY_ID, 'Search Wikipedia')).click()
         browser.element((AppiumBy.ID, 'org.wikipedia.alpha:id/search_src_text')).type('Python')
