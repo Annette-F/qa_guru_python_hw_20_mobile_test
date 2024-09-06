@@ -23,7 +23,7 @@ def mobile_management():
     options = UiAutomator2Options()
 
     if config.deviceName:
-        options.set_capability('ddeviceName', config.deviceName)
+        options.set_capability('deviceName', config.deviceName)
 
     if config.appWaitActivity:
         options.set_capability('appWaitActivity', config.appWaitActivity)
