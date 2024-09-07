@@ -4,12 +4,10 @@ import config
 import os
 
 
-
 def add_bstack_video(session_id):
     bstack_session = requests.get(
         f'https://api.browserstack.com/app-automate/sessions/{session_id}.json',
-        auth=(config.bstack_userName, config.bstack_accessKey),
-        # auth=(os.getenv('USER_NAME'), os.getenv('ACCESS_KEY'))
+        auth=(os.getenv('USER_NAME'), os.getenv('ACCESS_KEY'))
     ).json()
     video_url = bstack_session['automation_session']['video_url']
 
@@ -22,7 +20,6 @@ def add_bstack_video(session_id):
         name='Video recording',
         attachment_type=allure.attachment_type.HTML,
     )
-
 
 
 def add_bstack_screenshot(browser):

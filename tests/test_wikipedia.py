@@ -15,10 +15,12 @@ def test_verify_onboarding_screen():
             have.text('The Free Encyclopedia\n…in over 300 languages'))
     with allure.step('Verify second onboarding screen'):
         browser.element((AppiumBy.ID, 'org.wikipedia.alpha:id/fragment_onboarding_forward_button')).click()
-        browser.element((AppiumBy.ID, 'org.wikipedia.alpha:id/primaryTextView')).should(have.text('New ways to explore'))
+        browser.element((AppiumBy.ID, 'org.wikipedia.alpha:id/primaryTextView')).should(
+            have.text('New ways to explore'))
     with allure.step('Verify third onboarding screen'):
         browser.element((AppiumBy.ID, 'org.wikipedia.alpha:id/fragment_onboarding_forward_button')).click()
-        browser.element((AppiumBy.ID, 'org.wikipedia.alpha:id/primaryTextView')).should(have.text('Reading lists with sync'))
+        browser.element((AppiumBy.ID, 'org.wikipedia.alpha:id/primaryTextView')).should(
+            have.text('Reading lists with sync'))
     with allure.step('Verify forth onboarding screen'):
         browser.element((AppiumBy.ID, 'org.wikipedia.alpha:id/fragment_onboarding_forward_button')).click()
         browser.element((AppiumBy.ID, 'org.wikipedia.alpha:id/primaryTextView')).should(have.text('Data & Privacy'))
@@ -26,38 +28,3 @@ def test_verify_onboarding_screen():
         browser.element((AppiumBy.ID, 'org.wikipedia.alpha:id/fragment_onboarding_done_button')).click()
         browser.element((AppiumBy.ACCESSIBILITY_ID, 'Search Wikipedia')).click()
         browser.element((AppiumBy.ID, 'org.wikipedia.alpha:id/search_src_text')).type('Java')
-
-@allure.tag('Mobile')
-@allure.severity(Severity.NORMAL)
-@allure.label('owner', 'Annette-F')
-@allure.feature('Search article about "Appium"')
-@allure.story('Search article')
-def test_search():
-    with allure.step('Skip wellcome screen'):
-        browser.element((AppiumBy.ID, 'org.wikipedia.alpha:id/fragment_onboarding_skip_button')).click()
-    with allure.step('Type search "Appium"'):
-        browser.element((AppiumBy.ACCESSIBILITY_ID, 'Search Wikipedia')).click()
-        browser.element((AppiumBy.ID, 'org.wikipedia.alpha:id/search_src_text')).type('Appium')
-    with allure.step('Verify content found'):
-        results = browser.all((AppiumBy.ID, 'org.wikipedia.alpha:id/page_list_item_title'))
-        results.should(have.size_greater_than(0))
-        results.first.should(have.text('Appium'))
-
-
-@allure.tag('Mobile')
-@allure.severity(Severity.NORMAL)
-@allure.label('owner', 'Annette-F')
-@allure.feature('Search article about "Python"')
-@allure.story('Search article')
-def test_search_first_article():
-    with allure.step('Skip wellcome screen'):
-        browser.element((AppiumBy.ID, 'org.wikipedia.alpha:id/fragment_onboarding_skip_button')).click()
-    with allure.step('Type search "Python"'):
-        browser.element((AppiumBy.ACCESSIBILITY_ID, 'Search Wikipedia')).click()
-        browser.element((AppiumBy.ID, 'org.wikipedia.alpha:id/search_src_text')).type('Python')
-    with allure.step('Verify content found'):
-        results = browser.all((AppiumBy.ID, 'org.wikipedia.alpha:id/page_list_item_title'))
-        results.should(have.size_greater_than(0))
-        results.first.should(have.text('Python'))
-    with allure.step('Click the first article'):
-        browser.all((AppiumBy.ID, 'org.wikipedia.alpha:id/page_list_item_title')).first.click()

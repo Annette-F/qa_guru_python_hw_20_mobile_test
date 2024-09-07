@@ -1,16 +1,24 @@
-import allure
 import pytest
-import allure_commons
-from appium.options.android import UiAutomator2Options
-from selene import browser, support
-import os
+from selene import browser
 from dotenv import load_dotenv
 from appium import webdriver
-
 import config
-
 from selene_in_action.utils import attach
-from selene_in_action import utils
+
+
+def pytest_addoption(parser):
+    parser.addoption('--context', default='bstack', help='Specify the test context')
+
+
+def pytest_configure(config):
+    context = config.getoption('--context')
+    env_file_path = f'.env.{context}'
+    load_dotenv(dotenv_path=env_file_path)
+
+
+@pytest.fixture()
+def context(request):
+    return request.config.getoption('--context')
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -19,44 +27,10 @@ def load_env():
 
 
 @pytest.fixture(scope='function', autouse=True)
-def mobile_management():
-    options = UiAutomator2Options()
-
-    if config.deviceName:
-        options.set_capability('deviceName', config.deviceName)
-
-    if config.appWaitActivity:
-        options.set_capability('appWaitActivity', config.appWaitActivity)
-
-    options.set_capability('app', (
-        config.app if (config.app.startswith('/') or config.runs_on_bstack)
-        else utils.file.abs_path_from_project(config.app)
-    ))
-
-
-    if config.runs_on_bstack:
-        options.set_capability('platformVersion', '9.0')
-        # login = os.getenv('USER_NAME')
-        # access_key = os.getenv('ACCESS_KEY')
-        options.set_capability(
-        # 'app': config.app_url,
-        # 'app': os.getenv('APP_URL'),
-            'bstack:options', {
-                'projectName': 'First Python project',
-                'buildName': 'browserstack-build-1',
-                'sessionName': 'BStack first_test',
-
-                'userName': config.bstack_userName,
-                'accessKey': config.bstack_accessKey
-        }
-    )
-
-    with allure.step('Init app session'):
-        browser.config.driver = webdriver.Remote(config.remote_url, options=options)
-
-    browser.config.timeout = float(os.getenv('timeout', '10.0'))
-
-    browser.config._wait_decorator = support._logging.wait_with(context=allure_commons._allure.StepContext)
+def mobile_management(context):
+    options = config.to_driver_options(context=context)
+    browser.config.driver = webdriver.Remote(options.get_capability('remote_url'), options=options)
+    browser.config.timeout = 10.0
 
     yield
 
@@ -65,12 +39,7 @@ def mobile_management():
 
     session_id = browser.driver.session_id
 
-    with allure.step('Tear down app session with id: ' + session_id):
-        browser.quit()
+    browser.quit()
 
-
-    if config.runs_on_bstack:
+    if context == 'bstack':
         attach.add_bstack_video(session_id)
-
-
-
